@@ -6,11 +6,11 @@ To be able to run the "mexResize" function, try to use either one of the include
 OpenCV is needed for this. It can be modified for this purpose.
 
 compilemex in linux :
-___
-mex -lopencv_core -lopencv_imgproc -L/usr/include/ -I/usr/include/ mexResize.cpp MxArray.cpp
 
-compilemex in windows:
+mex -lopencv_core -lopencv_imgproc -L/usr/include/ -I/usr/include/ mexResize.cpp MxArray.cpp
 ___
+compilemex in windows:
+
 mex -lopencv_core242 -lopencv_imgproc242 -L"C:\Program Files\OpenCV-2.4.2\build\x64\vc10\lib" -I"C:\Program Files\OpenCV-2.4.2\build\include" mexResize.cpp MxArray.cpp
 ___
 Instructions:
