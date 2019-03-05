@@ -16,32 +16,27 @@ pos = floor(params.init_pos);
 target_sz = floor(params.wsize);
 % for visualization
 visualization = params.visualization;
+savevideo=params.savevideo;
 % the num of images
 num_frames = numel(img_files);
-
+% initial size of object
 init_target_sz = target_sz;
-
 % target size att scale = 1
 base_target_sz = target_sz;
-
 % window size, taking padding into account
 sz = floor(base_target_sz * (1 + padding));
-
 % desired translation filter output (gaussian shaped), bandwidth proportional to target size
 output_sigma = sqrt(prod(base_target_sz)) * output_sigma_factor;
 [rs, cs] = ndgrid((1:sz(1)) - floor(sz(1)/2), (1:sz(2)) - floor(sz(2)/2));
 y = exp(-0.5 * (((rs.^2 + cs.^2) / output_sigma^2)));
 yf = single(fft2(y));
-
 % desired scale filter output (gaussian shaped), bandwidth proportional to number of scales
 scale_sigma = nScales/sqrt(33) * scale_sigma_factor;
 ss = (1:nScales) - ceil(nScales/2);
 ys = exp(-0.5 * (ss.^2) / scale_sigma^2);
 ysf = single(fft(ys));
-
 % store pre-computed translation filter cosine window
 cos_window = single(hann(sz(1)) * hann(sz(2))');
-
 % store pre-computed scale filter cosine window
 if mod(nScales,2) == 0
     scale_window = single(hann(nScales+1));
@@ -49,11 +44,9 @@ if mod(nScales,2) == 0
 else
     scale_window = single(hann(nScales));
 end;
-
 % scale factors
 ss = 1:nScales;
 scaleFactors = scale_step.^(ceil(nScales/2) - ss);
-
 % compute the resize dimensions used for feature extraction in the scale estimation
 scale_model_factor = 1;
 if prod(init_target_sz) > scale_model_max_area
@@ -70,9 +63,11 @@ time = 0;
 im = imread([video_path img_files{1}]);
 min_scale_factor = scale_step ^ ceil(log(max(5 ./ sz)) / log(scale_step));
 max_scale_factor = scale_step ^ floor(log(min([size(im,1) size(im,2)] ./ base_target_sz)) / log(scale_step));
-
-% testVideo = VideoWriter('test.avi');
-% open(testVideo);
+% save video or not
+if savevideo,
+    testVideo = VideoWriter('test.avi');
+    open(testVideo);
+end
 % start tracking
 for frame = 1:num_frames,
     % load image
@@ -157,10 +152,11 @@ for frame = 1:num_frames,
             end
         end
         drawnow
-        frameVideo = getframe;
-%         writeVideo(testVideo,frameVideo);
-%         pause
+        if savevideo,
+            frameVideo = getframe;
+            writeVideo(testVideo,frameVideo);
+        end
     end
 end
-
+% calculate the frames per second
 fps = num_frames/time;

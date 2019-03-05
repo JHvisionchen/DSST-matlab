@@ -30,8 +30,7 @@ if size(positions,1) ~= size(ground_truth,1),
 end
 
 %calculate distances to ground truth over all frames
-distances = sqrt((positions(:,1) - ground_truth(:,1)).^2 + ...
-    (positions(:,2) - ground_truth(:,2)).^2);
+distances = sqrt((positions(:,1) - ground_truth(:,1)).^2 + (positions(:,2) - ground_truth(:,2)).^2);
 distances(isnan(distances)) = [];
 
 %calculate distance precision

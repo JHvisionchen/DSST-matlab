@@ -15,6 +15,7 @@ params.scale_step = 1.02;               % Scale increment factor (denoted "a" in
 params.scale_model_max_area = 512;      % the maximum size of scale examples
 
 params.visualization = 1;
+params.savevideo=0;
 
 %ask the user for the video
 video_path = choose_video(base_path);
